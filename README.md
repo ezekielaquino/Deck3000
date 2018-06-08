@@ -25,6 +25,11 @@ Include the module via `npm i deck3000` or `yarn add deck3000` and import it int
 
 **Very important** You must also include the [css](https://github.com/ezekielaquino/Deck3000/blob/master/dist/deck3000.css) that comes with the module!
 
+```css
+    // stylus, sass, etc.
+    @import 'deck3000/dist/deck3000.css';
+```
+
 ### DOM Structure
 **Deck3000** requires the following structure from your HTML (see below)
 - a parent container that includes the selector `js-deck3000`
