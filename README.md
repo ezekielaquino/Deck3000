@@ -12,6 +12,7 @@ What this component provides is a way to handle the basic and essential interact
 ## Features
 - Weighing in at a cute `~2kb` (js) `450b` (css)
 - Infinite slides (vertical / horizontal)
+- Scroll/Keyboard/Touch friendly
 - Super smooth
 - Super simple
 - Super cute
