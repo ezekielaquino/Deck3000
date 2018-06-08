@@ -31,7 +31,7 @@ class Section {
   }
 
   _initSlides() {
-    const children = Array.from(this.element.querySelectorAll(this.slideSelector)) || this.element.children;
+    const children = Array.from(this.slideSelector ? this.element.querySelectorAll(this.slideSelector) : this.element.children);
 
     if (children.length === 2) {
       const clone = children[0].cloneNode(true);
