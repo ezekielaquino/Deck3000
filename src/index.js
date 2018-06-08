@@ -84,6 +84,7 @@ class Deck3000 {
     const { current, sectionLength } = this.state;
     const currentSection = this.sections[current];
     const currentSlide = currentSection.slides[currentSection.currentSlide];
+    const isSection = type === 'section';
     this.state.direction = direction;
 
     if (type === 'section') {
@@ -117,6 +118,10 @@ class Deck3000 {
       });
     }
 
+    if (this.resetSlides && isSection) {
+      this.navigate('slide', 0, false, true);
+    }
+
     if (withCallback) this.callback(type);
   }
 
@@ -133,10 +138,6 @@ class Deck3000 {
     const onEnd = isSection ? this.onSectionEnd : this.onSlideEnd;
 
     this.state.isAnimating = true;
-
-    if (this.resetSlides && isSection) {
-      this.navigate('slide', 0, false, true);
-    }
 
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
