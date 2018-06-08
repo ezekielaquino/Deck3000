@@ -23,6 +23,8 @@ Include the module via `npm i deck3000` or `yarn add deck3000` and import it int
     import Deck3000 from 'deck3000';
 ```
 
+**Very important** You must also include the [css](https://github.com/ezekielaquino/Deck3000/blob/master/dist/deck3000.css) that comes with the module!
+
 ### DOM Structure
 **Deck3000** requires the following structure from your HTML (see below)
 - a parent container that includes the selector `js-deck3000`
@@ -32,6 +34,8 @@ Include the module via `npm i deck3000` or `yarn add deck3000` and import it int
 *Note*: if you plan on having elements that are siblings of a slide within a section (for example,some absolute positioned elements within a section) you *MUST* have a selector on each slide and declare that as a `slideSelector` option when instantiating **Deck3000**, otherwise *all* direct descendants of a section will be instantiated as a slide.
 
 After **Deck3000** successfully instantiated, a `is-init` selector will be attached to the parent `js-deck3000` element.
+
+Animation speed and easing are all done via [CSS](https://github.com/ezekielaquino/Deck3000/blob/5ac9c62b4b78e2b2ec27a05f45533c58dca27cb2/dist/deck3000.css#L21) in addition to all the essentials of making the component work so **don't forget to import the stylesheet!**
 
 ```html
     <div class="mySectionClass js-deck3000">

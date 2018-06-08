@@ -1,6 +1,6 @@
 {
   "name": "deck3000",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "Slider component for the new millenium",
   "license": "MIT",
   "authors": [
@@ -10,9 +10,10 @@
   "keywords": [
     "deck",
     "fullpage",
+    "full page",
     "onepage",
-    "one_page",
-    "single_page",
+    "one page",
+    "single page",
     "slides",
     "slider",
     "slide"
