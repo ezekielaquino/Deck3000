@@ -17,6 +17,12 @@ What this component provides is a way to handle the basic and essential interact
 
 ## Getting Started
 
+Include the module via `npm i deck3000` or `yarn add deck3000` and import it into your project.
+
+```js
+    import Deck3000 from 'deck3000';
+```
+
 ### DOM Structure
 **Deck3000** requires the following structure from your HTML (see below)
 - a parent container that includes the selector `js-deck3000`
