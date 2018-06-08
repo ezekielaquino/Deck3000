@@ -17,6 +17,9 @@ What this component provides is a way to handle the basic and essential interact
 - Super simple
 - Super cute
 
+## Coming soon
+- [ ] Navigation updates URL and history
+
 
 ## Getting Started
 
