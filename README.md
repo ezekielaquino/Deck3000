@@ -7,6 +7,8 @@ Simple! It's a slider component 😀 which can navigate (infinitely!) vertically
 
 What this component provides is a way to handle the basic and essential interactions of the slider itself. This will not provide you with the UI or anything like that; all the fun and responsibility of implementing the UI and interaction around the slider is all up to you!
 
+![alt text](https://s22.postimg.cc/bus8dzp41/ezgif-1-7c340b3d99.gif "Deck3000 simple sample")
+
 ## Features
 - Weighing in at a cute `~2kb` (js) `450b` (css)
 - Infinite slides (vertical / horizontal)
@@ -75,8 +77,8 @@ Animation speed and easing are all done via [CSS](https://github.com/ezekielaqui
 ```js
     const Slideshow = new Deck3000({
         slideSelector: '.slide', // (optional)
-        resetSlides: true, // default = true, reset to the first slide of a section
-        keyboardEvents: true, // default = true
+        resetSlides: true,
+        keyboardEvents: true,
         onSectionStart: state => onSectionStart,
         onSectionEnd: state => func,
         onSlideStart: state => func,
