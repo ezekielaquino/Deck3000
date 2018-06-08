@@ -5,7 +5,7 @@ import MouseWheel from './MouseWheel';
 import TouchEvents from './TouchEvents';
 
 class Deck3000 {
-  constructor(options = { keyboardEvents: true }) {
+  constructor(options) {
     Object.assign(this, options);
     this.baseSelector = 'js-deck3000';
     this.element = document.querySelector(`.${this.baseSelector}`);
