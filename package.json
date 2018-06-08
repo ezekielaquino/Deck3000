@@ -6,6 +6,17 @@
   "authors": [
     "Ezekiel Aquino <ezekielaquino@gmail.com>"
   ],
+  "repository": "ezekielaquino/Deck3000",
+  "keywords": [
+    "deck",
+    "fullpage",
+    "onepage",
+    "one_page",
+    "single_page",
+    "slides",
+    "slider",
+    "slide"
+  ],
   "scripts": {
     "build:dist": "microbundle --target=browser --strict --name=Deck3000",
     "build:docs": "microbundle --target=browser --strict --output './docs' --name=Deck3000",
