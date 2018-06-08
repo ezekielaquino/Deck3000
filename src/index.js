@@ -52,7 +52,7 @@ class Deck3000 {
 
     TouchEvents(this);
 
-    if (!this.keyboardEvents) {
+    if (this.keyboardEvents) {
       window.addEventListener('keyup', e => {
         if (this.state.isAnimating) return;
 
