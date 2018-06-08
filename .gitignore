@@ -1,0 +1,7 @@
+.DS_STORE
+*.lock
+*.map
+node_modules
+*.log
+docs/deck3000.es.js
+docs/deck3000.js

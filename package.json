@@ -1,0 +1,21 @@
+{
+  "name": "Deck3000",
+  "description": "Slider component for the new millenium",
+  "license": "MIT",
+  "authors": [
+    "Ezekiel Aquino <ezekielaquino@gmail.com>"
+  ],
+  "scripts": {
+    "build:dist": "microbundle --target=browser --strict --name=Deck3000",
+    "build:docs": "microbundle --target=browser --strict --output './docs' --name=Deck3000",
+    "build": "yarn build:dist & yarn build:docs",
+    "dev": "microbundle watch"
+  },
+  "source": "src/index.js",
+  "main": "dist/deck3000.js",
+  "module": "dist/deck3000.es.js",
+  "umd:main": "dist/deck3000.umd.js",
+  "dependencies": {
+    "mitt": "^1.1.3"
+  }
+}
