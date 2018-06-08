@@ -1,4 +1,5 @@
 .DS_STORE
+.npmignore
 *.lock
 *.map
 node_modules

@@ -1,5 +1,6 @@
 {
-  "name": "Deck3000",
+  "name": "deck3000",
+  "version": "0.0.1",
   "description": "Slider component for the new millenium",
   "license": "MIT",
   "authors": [
