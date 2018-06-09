@@ -3,6 +3,9 @@
 * with a few modi
 */
 const MouseWheel = (e, instance) => {
+  e.preventDefault();
+  e.stopPropagation();
+
   instance.currentTime = new Date().getTime();
 
   e = window.event || e || e.originalEvent;
@@ -19,7 +22,7 @@ const MouseWheel = (e, instance) => {
   const timeDiff = instance.currentTime - instance.prevTime;
   instance.prevTime = instance.currentTime;
 
-  if (timeDiff > 50) instance.scrolls = [];
+  if (timeDiff > 40) instance.scrolls = [];
 
   const _getAverage = length => {
     const n = Math.max(instance.scrolls.length - length, 1);
@@ -33,7 +36,9 @@ const MouseWheel = (e, instance) => {
     const avMid = _getAverage(70);
     const isAccelerating = avEnd >= avMid;
 
-    if (isAccelerating && timeDiff >= 50) {
+    if (isAccelerating && timeDiff >= 40) {
+      instance.state.isAnimating = true;
+
       if (delta < 0) {
         instance.navigate('section', 'next');
       }

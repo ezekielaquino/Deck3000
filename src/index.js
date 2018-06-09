@@ -95,7 +95,7 @@ class Deck3000 {
   }
 
   navigate(type, direction, withCallback = true, reset) {
-    if (this.noEvents || this.state.isAnimating) return;
+    if (this.noEvents) return;
 
     const { current, sectionLength } = this.state;
     const currentSection = this.sections[current];
@@ -154,8 +154,6 @@ class Deck3000 {
     const isSection = type === 'section';
     const onStart = isSection ? this.onSectionStart : this.onSlideStart;
     const onEnd = isSection ? this.onSectionEnd : this.onSlideEnd;
-
-    this.state.isAnimating = true;
 
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
