@@ -18,7 +18,7 @@ What this component provides is a way to handle the basic and essential interact
 - Super cute
 
 ## Coming soon
-- [ ] Navigation updates URL and history
+- [x] Navigation updates URL and history (replaceState)
 
 
 ## Getting Started
@@ -51,7 +51,7 @@ Animation speed and easing are all done via [CSS](https://github.com/ezekielaqui
 ```html
     <div class="mySectionClass js-deck3000">
         <!-- First section -->
-        <div class="section">
+        <div class="section" data-title="Museum project">
             <div class="slide">
                 Slide one
             </div>
@@ -62,9 +62,9 @@ Animation speed and easing are all done via [CSS](https://github.com/ezekielaqui
                 Slide three
             </div>
         </div>
-        
+
         <!-- Second section -->
-        <div class="section">
+        <div class="section" data-title="Fashion editorial">
             <div class="slide">
                 Section two - Slide one
             </div>
@@ -83,12 +83,13 @@ Animation speed and easing are all done via [CSS](https://github.com/ezekielaqui
         slideSelector: '.slide', // (optional)
         resetSlides: true,
         keyboardEvents: true,
+        updateURL: true,
         onSectionStart: state => onSectionStart,
         onSectionEnd: state => func,
         onSlideStart: state => func,
         onSlideEnd: state => func,
     });
-    
+
     const onSectionStart = state => {
         console.log(state); // This logs the state object below
     };
@@ -117,6 +118,10 @@ Animation speed and easing are all done via [CSS](https://github.com/ezekielaqui
 ```
 
 After **Deck3000** instantiates, it will not mutate the structure of the DOM in any way aside from adding classes to `sections` and `slides`.
+
+## URLs
+
+If you have set `updateURL` to `true` then you may attach a `data-title="Whatever"` to a `section`. This string will be converted into a slug e.g. `Fashion brand` -> `fashion-brand` and will be appended to the URL `/fashion-brand` when you navigate across sections. If you do set `updateURL` to `true` but do *not* attach a data-title attribute, then it will just use the index of the current section e.g. `/0`.
 
 ## API
 
@@ -149,7 +154,7 @@ a.k.a The ✨🥩 of **Deck3000**
             Slideshow.disableEvents(bool);
             return;
         }
-        
+
         overlay.classList.remove('is-active');
     };
 ```
@@ -162,7 +167,7 @@ a.k.a The ✨🥩 of **Deck3000**
         // Do something when navigating sections
         console.log(e);
     });
-    
+
     [Deck3000Instance].Emitter.on('navigateSlide', e=> {
         // Do something when navigating slides
         console.log(e);
