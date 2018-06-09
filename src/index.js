@@ -25,16 +25,18 @@ class Deck3000 {
     const sections = Array.from(this.element.children).map((element, index, array) => {
       const path = window.location.pathname.split('/')[1];
 
-      this.state.sectionLength = array.length - 1;
+      this.state.sectionLength = this.state.prev = array.length - 1;
 
-      if (path === ToSlug(element.dataset.title) || path === index.toString()) {
-        SetCurrentState({
-          state: this.state,
-          currentKey: 'current',
-          currentIndex: index,
-          length: this.state.sectionLength,
-          direction: index,
-        });
+      if (this.updateURL && path) {
+        if (path === ToSlug(element.dataset.title) || path === index.toString()) {
+          SetCurrentState({
+            state: this.state,
+            currentKey: 'current',
+            currentIndex: index,
+            length: this.state.sectionLength,
+            direction: index,
+          });
+        }
       }
 
       return new Section({
@@ -158,7 +160,8 @@ class Deck3000 {
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
       this.state.isAnimating = false;
-      SetBrowserHistory(this.state, sectionTitle);
+
+      if (this.updateURL) SetBrowserHistory(this.state, sectionTitle);
     }, this.transitionDuration);
 
     if (onStart) onStart(state);
