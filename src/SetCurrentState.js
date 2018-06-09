@@ -1,9 +1,17 @@
 const SetCurrentState = (args) => {
-  const { state, currentKey, direction, currentIndex, length } = args;
+  const {
+    state,
+    currentKey,
+    direction,
+    currentIndex,
+    length
+  } = args;
 
   if (Number.isInteger(direction)) {
     state[currentKey] = direction;
   } else {
+    state.direction = direction;
+
     switch (direction) {
       case 'next':
         if (currentIndex !== length) state[currentKey] += 1;

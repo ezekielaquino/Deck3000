@@ -10,7 +10,7 @@ const MouseWheel = (e, instance) => {
   const value = e.wheelData || -e.deltaY || -e.detail;
   const delta = Math.max(-1, Math.min(1, value));
 
-  if (instance.scrolls.length >= 150) {
+  if (instance.scrolls.length >= 100) {
     instance.scrolls.shift();
   }
 
