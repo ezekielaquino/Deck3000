@@ -3,6 +3,8 @@ import Section from './Section';
 import SetCurrentState from './SetCurrentState';
 import MouseWheel from './MouseWheel';
 import TouchEvents from './TouchEvents';
+import ToSlug from './ToSlug';
+import SetBrowserHistory from './SetBrowserHistory';
 
 class Deck3000 {
   constructor(options) {
@@ -20,7 +22,23 @@ class Deck3000 {
 
   init() {
     const { current } = this.state;
-    const sections = Array.from(this.element.children).map((element, index) => {
+    const sections = Array.from(this.element.children).map((element, index, array) => {
+      const path = window.location.pathname.split('/')[1];
+
+      this.state.sectionLength = this.state.prev = array.length - 1;
+
+      if (this.updateURL && path) {
+        if (path === ToSlug(element.dataset.title) || path === index.toString()) {
+          SetCurrentState({
+            state: this.state,
+            currentKey: 'current',
+            currentIndex: index,
+            length: this.state.sectionLength,
+            direction: index,
+          });
+        }
+      }
+
       return new Section({
         slideshow: this,
         slideSelector: this.slideSelector,
@@ -29,16 +47,14 @@ class Deck3000 {
       });
     });
 
-    this.state.sectionLength = this.state.prev = sections.length - 1;
     this.sections = sections;
-
-    this._attachEventHandlers();
 
     Emitter.emit('navigate', this.state);
     Emitter.emit('navigateSlide', { current });
 
     setTimeout(() => {
       this.element.classList.add('is-init');
+      this._attachEventHandlers();
       this.transitionDuration = parseFloat(getComputedStyle(this.sections[0].element)['transitionDuration']) * 1000;
     }, 0);
   }
@@ -95,6 +111,7 @@ class Deck3000 {
         length: sectionLength,
         direction,
       });
+
       Emitter.emit('navigate', this.state);
     }
 
@@ -127,6 +144,7 @@ class Deck3000 {
 
   callback(type) {
     const currentSection = this.sections[this.state.current];
+    const sectionTitle = currentSection.element.dataset.title;
     const state = {
       section: this.state,
       slide: currentSection.state,
@@ -142,6 +160,8 @@ class Deck3000 {
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
       this.state.isAnimating = false;
+
+      if (this.updateURL) SetBrowserHistory(this.state, sectionTitle);
     }, this.transitionDuration);
 
     if (onStart) onStart(state);
