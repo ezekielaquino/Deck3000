@@ -1,49 +1,21 @@
-/**
-* Taken from Alvaro Trigo's Fullpage.js
-* with a few modi
-*/
 const MouseWheel = (e, instance) => {
   e.preventDefault();
   e.stopPropagation();
 
   instance.currentTime = new Date().getTime();
 
-  e = window.event || e || e.originalEvent;
+  const timeDiff = instance.currentTime - (instance.prevTime || 0);
+  const directionY = Math.sign(e.deltaY) > 0 ? 'next' : 'prev';
+  const directionX = Math.sign(e.deltaX) > 0 ? 'next' : 'prev';
 
-  const value = e.wheelData || -e.deltaY || -e.detail;
-  const delta = Math.max(-1, Math.min(1, value));
-
-  if (instance.scrolls.length >= 100) {
-    instance.scrolls.shift();
-  }
-
-  instance.scrolls.push(Math.abs(value));
-
-  const timeDiff = instance.currentTime - instance.prevTime;
   instance.prevTime = instance.currentTime;
 
-  if (timeDiff > 40) instance.scrolls = [];
+  if (!instance.state.isAnimating && timeDiff > 50) {
+    const isY = Math.abs(e.deltaY) && Math.abs(e.deltaX) <= 1;
+    const isX = Math.abs(e.deltaX) && Math.abs(e.deltaY) <= 1;
 
-  const _getAverage = length => {
-    const n = Math.max(instance.scrolls.length - length, 1);
-    const array = instance.scrolls.slice(n);
-
-    return array.reduce((p, c) => p + c, 0 ) / length;
-  }
-
-  if (!instance.state.isAnimating) {
-    const avEnd = _getAverage(10);
-    const avMid = _getAverage(70);
-    const isAccelerating = avEnd >= avMid;
-
-    if (isAccelerating && timeDiff >= 40) {
-      instance.state.isAnimating = true;
-
-      if (delta < 0) {
-        instance.navigate('section', 'next');
-      }
-      else instance.navigate('section', 'prev');
-    }
+    if (isY) return instance.navigate('section', directionY);
+    else instance.navigate('slide', directionX);
   }
 };
 
