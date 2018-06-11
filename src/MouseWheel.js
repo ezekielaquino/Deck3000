@@ -14,8 +14,10 @@ const MouseWheel = (e, instance) => {
     const isY = Math.abs(e.deltaY) && Math.abs(e.deltaX) <= 1;
     const isX = Math.abs(e.deltaX) && Math.abs(e.deltaY) <= 1;
 
+    instance.state.isAnimating = true;
+
     if (isY) return instance.navigate('section', directionY);
-    else instance.navigate('slide', directionX);
+    if (isX) return instance.navigate('slide', directionX);
   }
 };
 

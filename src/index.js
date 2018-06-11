@@ -54,8 +54,8 @@ class Deck3000 {
 
     setTimeout(() => {
       this.element.classList.add('is-init');
-      this._attachEventHandlers();
       this.transitionDuration = parseFloat(getComputedStyle(this.sections[0].element)['transitionDuration']) * 1000;
+      this._attachEventHandlers();
     }, 0);
   }
 
