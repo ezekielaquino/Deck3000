@@ -95,7 +95,9 @@ class Deck3000 {
   }
 
   navigate(type, direction, withCallback = true, reset) {
-    if (this.noEvents) return;
+    if (this.noEvents || this.state.isAnimating) return;
+
+    this.state.isAnimating = true;
 
     const { current, sectionLength } = this.state;
     const currentSection = this.sections[current];
@@ -135,8 +137,11 @@ class Deck3000 {
       });
     }
 
-    if (this.resetSlides && isSection) {
-      this.navigate('slide', 0, false, true);
+    if (this.resetSlides) {
+      if (isSection) this.navigate('slide', 0, false, true);
+      this.state.isAnimating = false;
+    } else {
+      currentSection.element.addEventListener('transitionend', e => this._onTransitionEnd(e));
     }
 
     if (withCallback) this.callback(type);
@@ -144,7 +149,6 @@ class Deck3000 {
 
   callback(type) {
     const currentSection = this.sections[this.state.current];
-    const sectionTitle = currentSection.element.dataset.title;
     const state = {
       section: this.state,
       slide: currentSection.state,
@@ -155,15 +159,18 @@ class Deck3000 {
     const onStart = isSection ? this.onSectionStart : this.onSlideStart;
     const onEnd = isSection ? this.onSectionEnd : this.onSlideEnd;
 
-    clearTimeout(this.timeout);
-    this.timeout = setTimeout(() => {
-      this.state.isAnimating = false;
-
-      if (this.updateURL) SetBrowserHistory(this.state, sectionTitle);
-    }, this.transitionDuration);
-
     if (onStart) onStart(state);
     if (onEnd) onEnd(state);
+  }
+
+  _onTransitionEnd(e) {
+    const sectionTitle = e.target.dataset.title;
+
+    this.state.isAnimating = false;
+
+    if (this.updateURL) SetBrowserHistory(this.state, sectionTitle);
+
+    e.target.removeEventListener('transitionend', this._onTransitionEnd);
   }
 }
 
