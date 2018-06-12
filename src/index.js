@@ -114,6 +114,10 @@ class Deck3000 {
         direction,
       });
 
+      if (this.updateURL) {
+        SetBrowserHistory(this.state, this.sections[this.state.current].element.dataset.title);
+      }
+
       Emitter.emit('navigate', this.state);
     }
 
@@ -137,39 +141,27 @@ class Deck3000 {
       });
     }
 
-    if (this.resetSlides) {
-      if (isSection) this.navigate('slide', 0, false, true);
-      this.state.isAnimating = false;
-    } else {
-      currentSection.element.addEventListener('transitionend', e => this._onTransitionEnd(e));
+    if (this.resetSlides && isSection) this.navigate('slide', 0, false, true);
+
+    currentSection.element.addEventListener('transitionend', e => this._onTransitionEnd(e));
+
+    if (withCallback) {
+      const state = {
+        section: this.state,
+        slide: currentSection.state,
+        currentSectionElem: currentSection.element,
+        currentSlideElem: currentSection.getCurrentSlide(),
+      };
+      const onStart = isSection ? this.onSectionStart : this.onSlideStart;
+      const onEnd = isSection ? this.onSectionEnd : this.onSlideEnd;
+
+      if (onStart) onStart(state);
+      if (onEnd) onEnd(state);
     }
-
-    if (withCallback) this.callback(type);
-  }
-
-  callback(type) {
-    const currentSection = this.sections[this.state.current];
-    const state = {
-      section: this.state,
-      slide: currentSection.state,
-      currentSectionElem: currentSection.element,
-      currentSlideElem: currentSection.getCurrentSlide(),
-    };
-    const isSection = type === 'section';
-    const onStart = isSection ? this.onSectionStart : this.onSlideStart;
-    const onEnd = isSection ? this.onSectionEnd : this.onSlideEnd;
-
-    if (onStart) onStart(state);
-    if (onEnd) onEnd(state);
   }
 
   _onTransitionEnd(e) {
-    const sectionTitle = e.target.dataset.title;
-
     this.state.isAnimating = false;
-
-    if (this.updateURL) SetBrowserHistory(this.state, sectionTitle);
-
     e.target.removeEventListener('transitionend', this._onTransitionEnd);
   }
 }
