@@ -1,6 +1,5 @@
 const MouseWheel = (e, instance) => {
   e.preventDefault();
-  e.stopPropagation();
 
   instance.currentTime = new Date().getTime();
 
@@ -10,7 +9,7 @@ const MouseWheel = (e, instance) => {
 
   instance.prevTime = instance.currentTime;
 
-  if (!instance.state.isAnimating && timeDiff > 40) {
+  if (!instance.state.isAnimating && timeDiff > 80) {
     const isY = Math.abs(e.deltaY) && Math.abs(e.deltaX) <= 1;
     const isX = Math.abs(e.deltaX) && Math.abs(e.deltaY) <= 1;
 

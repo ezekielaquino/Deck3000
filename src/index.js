@@ -18,6 +18,7 @@ class Deck3000 {
     };
 
     this.init();
+    this._onTransitionEnd = this._onTransitionEnd.bind(this);
   }
 
   init() {
@@ -70,7 +71,7 @@ class Deck3000 {
 
     if (this.keyboardEvents) {
       window.addEventListener('keyup', e => {
-        if (this.state.isAnimating) return;
+        if (this.noEvents || this.state.isAnimating) return;
 
         switch (e.keyCode) {
           case 38: // up
@@ -94,18 +95,31 @@ class Deck3000 {
     this.noEvents = bool;
   }
 
-  navigate(type, direction, withCallback = true, reset) {
+  navigate(type, direction, reset, resetDirection) {
     if (this.noEvents || this.state.isAnimating) return;
 
-    this.state.isAnimating = true;
-
-    const { current, sectionLength } = this.state;
+    const { current, prev, next, sectionLength } = this.state;
     const currentSection = this.sections[current];
-    const currentSlide = currentSection.slides[currentSection.currentSlide];
+    const prevSection = this.sections[prev];
+    const nextSection = this.sections[next];
+    const currentSlide = currentSection.slides[currentSection.state.currentSlide];
     const isSection = type === 'section';
+    const element = isSection ? currentSection.element : currentSlide.element;
+    const callbackState = {
+      section: this.state,
+      slide: currentSection.state,
+      currentSectionElem: currentSection.element,
+      currentSlideElem: currentSection.getCurrentSlide(),
+    };
+    const onStart = isSection ? this.onSectionStart : this.onSlideStart;
+    const onEnd = isSection ? this.onSectionEnd : this.onSlideEnd;
+
+    this.state.isAnimating = !reset;
     this.state.direction = direction;
 
-    if (type === 'section') {
+    if (onStart) onStart(callbackState);
+
+    if (isSection) {
       SetCurrentState({
         state: this.state,
         currentKey: 'current',
@@ -115,19 +129,21 @@ class Deck3000 {
       });
 
       if (this.updateURL) {
-        SetBrowserHistory(this.state, this.sections[this.state.current].element.dataset.title);
+        SetBrowserHistory(this.state, this.sections[current].element.dataset.title);
       }
 
       Emitter.emit('navigate', this.state);
-    }
-
-    if (type === 'slide') {
+    } else {
       if (currentSection.state.slideLength === 0) return;
 
-      const { currentSlide, slideLength } = currentSection.state;
+      let section = currentSection;
+
+      if (reset) section = resetDirection === 'next' ? prevSection : nextSection;
+
+      const { currentSlide, slideLength } = section.state;
 
       SetCurrentState({
-        state: currentSection.state,
+        state: section.state,
         currentKey: 'currentSlide',
         currentIndex: currentSlide,
         length: slideLength,
@@ -141,28 +157,27 @@ class Deck3000 {
       });
     }
 
-    if (this.resetSlides && isSection) this.navigate('slide', 0, false, true);
-
-    currentSection.element.addEventListener('transitionend', e => this._onTransitionEnd(e));
-
-    if (withCallback) {
-      const state = {
-        section: this.state,
-        slide: currentSection.state,
-        currentSectionElem: currentSection.element,
-        currentSlideElem: currentSection.getCurrentSlide(),
-      };
-      const onStart = isSection ? this.onSectionStart : this.onSlideStart;
-      const onEnd = isSection ? this.onSectionEnd : this.onSlideEnd;
-
-      if (onStart) onStart(state);
-      if (onEnd) onEnd(state);
+    if (!reset) {
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        this._onTransitionEnd({
+          element,
+          onEnd,
+          callbackState,
+          isSection,
+          direction,
+        });
+      }, this.transitionDuration);
     }
   }
 
-  _onTransitionEnd(e) {
+  _onTransitionEnd(args) {
+    const { element, onEnd, callbackState, isSection, direction } = args;
+
     this.state.isAnimating = false;
-    e.target.removeEventListener('transitionend', this._onTransitionEnd);
+
+    if (isSection && this.resetSlides) this.navigate('slide', 0, true, direction);
+    if (onEnd) args.onEnd(callbackState);
   }
 }
 
