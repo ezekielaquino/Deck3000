@@ -64,7 +64,7 @@ class Deck3000 {
     this.scrolls = [];
     this.prevTime = new Date().getTime();
 
-    this.element.addEventListener('mousewheel', e => {MouseWheel(e, this) });
+    this.element.addEventListener('mousewheel', e => { MouseWheel(e, this) });
     this.element.addEventListener('DOMMouseScroll', e => { MouseWheel(e, this) });
 
     TouchEvents(this);
