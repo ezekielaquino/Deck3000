@@ -100,8 +100,6 @@ class Deck3000 {
 
     const { current, prev, next, sectionLength } = this.state;
     const currentSection = this.sections[current];
-    const prevSection = this.sections[prev];
-    const nextSection = this.sections[next];
     const currentSlide = currentSection.slides[currentSection.state.currentSlide];
     const isSection = type === 'section';
     const element = isSection ? currentSection.element : currentSlide.element;
@@ -128,19 +126,16 @@ class Deck3000 {
         direction,
       });
 
-      if (this.updateURL) {
-        SetBrowserHistory(this.state, this.sections[current].element.dataset.title);
+      if (this.updateURL && !reset) {
+        SetBrowserHistory(this.state, this.sections[this.state.current].element.dataset.title);
       }
 
       Emitter.emit('navigate', this.state);
     } else {
-      if (currentSection.state.slideLength === 0) return;
-
       let section = currentSection;
-
-      if (reset) section = resetDirection === 'next' ? prevSection : nextSection;
-
       const { currentSlide, slideLength } = section.state;
+
+      if (reset) section = this._getNextSection(resetDirection);
 
       SetCurrentState({
         state: section.state,
@@ -159,6 +154,7 @@ class Deck3000 {
 
     if (!reset) {
       clearTimeout(this.timeout);
+
       this.timeout = setTimeout(() => {
         this._onTransitionEnd({
           element,
@@ -167,8 +163,13 @@ class Deck3000 {
           isSection,
           direction,
         });
-      }, this.transitionDuration);
+      }, reset ? 0 : this.transitionDuration);
     }
+  }
+
+  _getNextSection(direction) {
+    const { next, prev } = this.state;
+    return direction === 'next' ? this.sections[prev] : this.sections[next];
   }
 
   _onTransitionEnd(args) {
