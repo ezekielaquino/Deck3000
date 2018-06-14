@@ -84,6 +84,7 @@ Animation speed and easing are all done via [CSS](https://github.com/ezekielaqui
         resetSlides: true,
         keyboardEvents: true,
         updateURL: true,
+        onInit: state => func,
         onSectionStart: state => onSectionStart,
         onSectionEnd: state => func,
         onSlideStart: state => func,

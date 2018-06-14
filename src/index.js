@@ -57,6 +57,8 @@ class Deck3000 {
       this.element.classList.add('is-init');
       this.transitionDuration = parseFloat(getComputedStyle(this.sections[0].element)['transitionDuration']) * 1000;
       this._attachEventHandlers();
+
+      if (this.onInit) this.onInit(this._getCallbackState());
     }, 0);
   }
 
@@ -103,19 +105,11 @@ class Deck3000 {
     const currentSlide = currentSection.slides[currentSection.state.currentSlide];
     const isSection = type === 'section';
     const element = isSection ? currentSection.element : currentSlide.element;
-    const callbackState = {
-      section: this.state,
-      slide: currentSection.state,
-      currentSectionElem: currentSection.element,
-      currentSlideElem: currentSection.getCurrentSlide(),
-    };
     const onStart = isSection ? this.onSectionStart : this.onSlideStart;
     const onEnd = isSection ? this.onSectionEnd : this.onSlideEnd;
 
     this.state.isAnimating = !reset;
     this.state.direction = direction;
-
-    if (onStart) onStart(callbackState);
 
     if (isSection) {
       SetCurrentState({
@@ -153,17 +147,29 @@ class Deck3000 {
     }
 
     if (!reset) {
+      if (onStart) onStart(this._getCallbackState());
+
       clearTimeout(this.timeout);
 
       this.timeout = setTimeout(() => {
         this._onTransitionEnd({
           element,
           onEnd,
-          callbackState,
           isSection,
           direction,
         });
       }, reset ? 0 : this.transitionDuration);
+    }
+  }
+
+  _getCallbackState() {
+    const currentSection = this.sections[this.state.current];
+
+    return {
+      section: this.state,
+      slide: currentSection.state,
+      currentSectionElem: currentSection.element,
+      currentSlideElem: currentSection.getCurrentSlide(),
     }
   }
 
@@ -173,12 +179,12 @@ class Deck3000 {
   }
 
   _onTransitionEnd(args) {
-    const { element, onEnd, callbackState, isSection, direction } = args;
+    const { element, onEnd, isSection, direction } = args;
 
     this.state.isAnimating = false;
 
     if (isSection && this.resetSlides) this.navigate('slide', 0, true, direction);
-    if (onEnd) args.onEnd(callbackState);
+    if (onEnd) args.onEnd(this._getCallbackState());
   }
 }
 
